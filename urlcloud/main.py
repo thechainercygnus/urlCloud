@@ -10,7 +10,7 @@ from .database import SessionLocal, engine
 
 app = FastAPI()
 
-v1 = FastAPI(title="urlCloud.xyz",description="short lived short urls for short lived needs",version="0.0.1", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"})
+v1 = FastAPI(title="urlCloud.xyz",description="Short Lived Shortened URLs for Short Term Needs",version="0.0.1", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"})
 
 models.Base.metadata.create_all(bind=engine)
 
