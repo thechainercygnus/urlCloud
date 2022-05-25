@@ -22,7 +22,7 @@ Request body contains the URL to be shortened and the **number of clicks** until
 
 app = FastAPI()
 
-v1 = FastAPI(title="urlCloud.xyz",description="Short Lived Shortened URLs for Short Term Needs",version="0.0.2", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"}, openapi_tags=tags_metadata)
+v1 = FastAPI(title="urlCloud.xyz",description="Short Lived Shortened URLs for Short Term Needs",version="0.0.3", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"}, openapi_tags=tags_metadata)
 
 models.Base.metadata.create_all(bind=engine)
 
