@@ -7,7 +7,9 @@ def create_db_url(db: Session, url: schemas.URLBase) -> models.URL:
     key = keygen.create_unique_random_key(db)
     secret_key = f"{key}_{keygen.create_random_key(length=8)}"
     db_url = models.URL(
-        target_url=url.target_url, key=key, secret_key=secret_key
+        target_url=url.target_url,
+        key=key, secret_key=secret_key,
+        max_clicks=url.max_clicks,
     )
     db.add(db_url)
     db.commit()
@@ -33,6 +35,8 @@ def get_db_url_by_secret_key(db: Session, secret_key: str) -> models.URL:
 
 def update_db_clicks(db: Session, db_url: schemas.URL) -> models.URL:
     db_url.clicks += 1
+    if db_url.clicks > db_url.max_clicks:
+        db_url.is_active = False
     db.commit()
     db.refresh(db_url)
     return db_url

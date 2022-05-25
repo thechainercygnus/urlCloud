@@ -8,9 +8,21 @@ from . import crud, models, schemas
 from .config import get_settings
 from .database import SessionLocal, engine
 
+tags_metadata = [{
+    "name": "create",
+    "description": """
+Request body contains the URL to be shortened and the **number of clicks** until the shortened URL is no longer valid.
+    """
+    },
+    {
+        "name": "admin",
+        "description": "Manage your shortened URLs. Requires the associated **secret key**"
+    }
+]
+
 app = FastAPI()
 
-v1 = FastAPI(title="urlCloud.xyz",description="Short Lived Shortened URLs for Short Term Needs",version="0.0.1", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"})
+v1 = FastAPI(title="urlCloud.xyz",description="Short Lived Shortened URLs for Short Term Needs",version="0.0.1", contact={"name": "Bryce Jenkins", "url": "https://github.com/thechainercygnus/urlcloud", "email": "bryce@durish.xyz"}, openapi_tags=tags_metadata)
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -33,16 +45,12 @@ def get_admin_info(db_url: models.URL) -> schemas.URL:
     admin_endpoint = app.url_path_for(
         "administration info", secret_key=db_url.secret_key
     )
-    db_url.url = str(base_url.replace(path=db_url.key))
+    redirect_endpoint = app.url_path_for("forwarder", url_key=db_url.key)
+    db_url.url = str(base_url.replace(path=redirect_endpoint))
     db_url.admin_url = str(base_url.replace(path=admin_endpoint))
     return db_url
 
-@v1.get("/")
-def read_root():
-    return "Welcome to UrlCloud. Please visit /docs to view docs"
-
-
-@v1.post("/url", response_model=schemas.URLInfo)
+@v1.post("/url", response_model=schemas.URLInfo, tags=["create"])
 def create_url(url: schemas.URLBase, db: Session = Depends(get_db)):
     if not validators.url(url.target_url):
         raise_bad_request(message="Your provided URL is not valid")
@@ -50,7 +58,7 @@ def create_url(url: schemas.URLBase, db: Session = Depends(get_db)):
     return get_admin_info(db_url)
 
 
-@v1.get("/{url_key}")
+@v1.get("/{url_key}", name="forwarder")
 def forward_to_target_url(
         url_key: str,
         request: Request,
@@ -63,7 +71,7 @@ def forward_to_target_url(
         raise_not_found(request)
 
 
-@v1.get("/admin/{secret_key}",name="administration info", response_model=schemas.URLInfo)
+@v1.get("/admin/{secret_key}",name="administration info", response_model=schemas.URLInfo, tags=["admin"])
 def get_url_info(
     secret_key: str, request: Request, db: Session = Depends(get_db)
 ):
@@ -73,7 +81,7 @@ def get_url_info(
         raise_not_found(request)
 
 
-@v1.delete("/admin/{secret_key}")
+@v1.delete("/admin/{secret_key}", tags=["admin"])
 def delete_url(
     secret_key: str, request: Request, db: Session = Depends(get_db)
 ):

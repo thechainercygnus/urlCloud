@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class URLBase(BaseModel):
     target_url: str
-
+    max_clicks: int
 
 class URL(URLBase):
     is_active: bool
