@@ -1,4 +1,5 @@
 from functools import lru_cache
+from os import getenv
 
 from pydantic import BaseSettings
 
@@ -6,7 +7,7 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     env_name: str = "Local"
     base_url: str = "http://localhost:8000"
-    db_url: str = "sqlite:///./urlcloud.db"
+    db_url: str = getenv("DB_URL") or "sqlite:///./urlcloud.db"
 
 
 @lru_cache
