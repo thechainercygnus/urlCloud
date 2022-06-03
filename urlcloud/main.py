@@ -24,7 +24,7 @@ app = FastAPI()
 v1 = FastAPI(
     title="urlCloud.xyz",
     description="Short Lived Shortened URLs for Short Term Needs",
-    version="0.1.1`",
+    version="0.1.2",
     contact={
         "name": "Bryce Jenkins",
         "url": "https://github.com/thechainercygnus/urlcloud",
