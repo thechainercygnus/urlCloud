@@ -70,8 +70,8 @@ def get_admin_info(db_url: models.URL) -> schemas.URL:
 def create_url(url: schemas.URLBase, db: Session = Depends(get_db)):
     if not validators.url(url.target_url):
         raise_bad_request(message="Your provided URL is not valid")
-    if not crud.get_db_url_by_key(db=db, url_key=url):
-        db_url = crud.create_db_url(db=db, url=url)
+
+    db_url = crud.create_db_url(db=db, url=url)
     return get_admin_info(db_url)
 
 
