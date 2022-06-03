@@ -13,7 +13,7 @@ def parse_db_url(db_url: str) -> str:
 
 
 engine = create_engine(
-    parse_db_url(get_settings().db_url), connect_args={"check_same_thread": False}
+    parse_db_url(get_settings().db_url), connect_args={"check_same_thread": True}
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
