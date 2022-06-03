@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 class URLBase(BaseModel):
     target_url: str
-    custom_slug: Optional[str] = None
 
 
 class URL(URLBase):
