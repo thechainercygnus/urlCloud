@@ -4,9 +4,16 @@ from sqlalchemy.orm import sessionmaker
 
 from .config import get_settings
 
-uri = get_settings().db_url
-if uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
-engine = create_engine(uri, connect_args={"check_same_thread": False})
+
+def parse_db_url(db_url: str) -> str:
+    uri = db_url
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+    return uri
+
+
+engine = create_engine(
+    parse_db_url(get_settings().db_url), connect_args={"check_same_thread": False}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
