@@ -1,0 +1,6 @@
+services:
+  urlcloud:
+    image: ghcr.io/thechainercygnus/urlcloud:build
+    container_name: urlcloud
+    ports:
+      - "8000:8000"
